@@ -26,6 +26,5 @@ func getUserInput() (string, string) {
 	return firstCurrency, secondCurrency
 }
 
-func converterCurrency(value float64, from string, to string) float64 {
-
+func converterCurrency(value float64, from string, to string) {
 }
