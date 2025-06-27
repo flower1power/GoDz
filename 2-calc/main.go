@@ -108,9 +108,9 @@ func calculateMed(nums []float64) (float64, error) {
 
 	mid := len(newNums) / 2
 
-	if mid%2 == 0 {
-		return (nums[mid-1] + nums[mid]) / 2, nil
+	if len(newNums)%2 == 0 {
+		return (newNums[mid-1] + newNums[mid]) / 2, nil
 	} else {
-		return nums[mid], nil
+		return newNums[mid], nil
 	}
 }
