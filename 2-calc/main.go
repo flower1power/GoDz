@@ -7,21 +7,31 @@ import (
 	"strings"
 )
 
+var operationMap = map[string]func([]float64) (float64, error){
+	"SUM": calculateSum,
+	"AVG": calculateAVG,
+	"MED": calculateMed,
+}
+
 func main() {
 	fmt.Println("__Калькулятор__")
 
 	operation, err := setOperations()
 	if err != nil {
+		fmt.Println("Завершение:", err)
 		return
 	}
 
 	numbers, err := setNumbers()
 	if err != nil {
+		fmt.Println("Завершение:", err)
 		return
 	}
 
-	result, err := calculate(operation, numbers)
+	onFunc := operationMap[operation]
+	result, err := onFunc(numbers)
 	if err != nil {
+		fmt.Println("Ошибка при вычислении:", err)
 		return
 	}
 
@@ -32,7 +42,7 @@ func setOperations() (string, error) {
 	var input string
 
 	for {
-		fmt.Print("Введите предполагаемую операцию (AVG - среднее, SUM - сумма, MED - медиана, Q - выход): ")
+		fmt.Print("Введите предполагаемую операцию (AVG, SUM, MED, Q - выход): ")
 		_, err := fmt.Scan(&input)
 
 		if err != nil {
@@ -46,7 +56,8 @@ func setOperations() (string, error) {
 			return "", fmt.Errorf("выход по запросу пользователя")
 		}
 
-		if input == "AVG" || input == "SUM" || input == "MED" {
+		_, ok := operationMap[input]
+		if ok {
 			return input, nil
 		}
 
@@ -95,24 +106,11 @@ func setNumbers() ([]float64, error) {
 	}
 }
 
-func calculate(operation string, nums []float64) (float64, error) {
-	if len(nums) < 1 {
-		return 0, nil
-	}
-
-	switch operation {
-	case "AVG":
-		return calculateAVG(nums)
-	case "SUM":
-		return calculateSum(nums)
-	case "MED":
-		return calculateMed(nums)
-	default:
-		return 0, fmt.Errorf("неизвестная операция: %s", operation)
-	}
-}
-
 func calculateSum(nums []float64) (float64, error) {
+	if len(nums) == 0 {
+		return 0, fmt.Errorf("пустой список чисел")
+	}
+
 	var sum float64
 	for _, v := range nums {
 		sum += v
@@ -131,6 +129,10 @@ func calculateAVG(nums []float64) (float64, error) {
 }
 
 func calculateMed(nums []float64) (float64, error) {
+	if len(nums) == 0 {
+		return 0, fmt.Errorf("пустой список чисел")
+	}
+
 	newNums := make([]float64, len(nums))
 	copy(newNums, nums)
 
