@@ -7,7 +7,9 @@ import (
 	"strings"
 )
 
-var operationMap = map[string]func([]float64) (float64, error){
+type operationM = map[string]func([]float64) (float64, error)
+
+var operationMap = operationM{
 	"SUM": calculateSum,
 	"AVG": calculateAVG,
 	"MED": calculateMed,
@@ -16,7 +18,7 @@ var operationMap = map[string]func([]float64) (float64, error){
 func main() {
 	fmt.Println("__Калькулятор__")
 
-	operation, err := setOperations()
+	operation, err := setOperations(&operationMap)
 	if err != nil {
 		fmt.Println("Завершение:", err)
 		return
@@ -38,7 +40,7 @@ func main() {
 	fmt.Printf("Результат операции: %s равен: %.2f ", operation, result)
 }
 
-func setOperations() (string, error) {
+func setOperations(o *operationM) (string, error) {
 	var input string
 
 	for {
@@ -56,7 +58,7 @@ func setOperations() (string, error) {
 			return "", fmt.Errorf("выход по запросу пользователя")
 		}
 
-		_, ok := operationMap[input]
+		_, ok := (*o)[input]
 		if ok {
 			return input, nil
 		}

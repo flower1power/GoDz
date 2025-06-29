@@ -6,7 +6,9 @@ import (
 	"strings"
 )
 
-var exchangeRates = map[string]float64{
+type ratesMap = map[string]float64
+
+var exchangeRates = ratesMap{
 	"USD": 1,
 	"EUR": 0.85,
 	"RUB": 89.6,
@@ -21,15 +23,15 @@ const amountMsg = "Введите сумму: "
 func main() {
 	fmt.Println("__Конвертер валют__")
 
-	from := getCurrencyInput(fromMsg)
-	to := getCurrencyInput(toMsg)
+	from := getCurrencyInput(fromMsg, &exchangeRates)
+	to := getCurrencyInput(toMsg, &exchangeRates)
 	amount := getAmount()
 
-	result := converter(amount, from, to)
+	result := converter(amount, from, to, &exchangeRates)
 	fmt.Printf("Итог конвертации: %.2f %s\n", result, to)
 }
 
-func getCurrencyInput(prompt string) string {
+func getCurrencyInput(prompt string, rates *ratesMap) string {
 	for {
 
 		fmt.Print(prompt)
@@ -38,7 +40,7 @@ func getCurrencyInput(prompt string) string {
 		currency = strings.ToUpper(currency)
 
 		quit(currency)
-		_, ok := exchangeRates[currency]
+		_, ok := (*rates)[currency]
 
 		if ok {
 			return currency
@@ -76,7 +78,7 @@ func quit(str string) {
 	}
 }
 
-func converter(amount float64, from string, to string) float64 {
-	usdAmount := amount / exchangeRates[from]
-	return usdAmount * exchangeRates[to]
+func converter(amount float64, from string, to string, rates *ratesMap) float64 {
+	usdAmount := amount / (*rates)[from]
+	return usdAmount * (*rates)[to]
 }
