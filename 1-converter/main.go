@@ -6,8 +6,14 @@ import (
 	"strings"
 )
 
-const UsdToEur = 0.85
-const UsdToRub = 89.6
+type ratesMap = map[string]float64
+
+var exchangeRates = ratesMap{
+	"USD": 1,
+	"EUR": 0.85,
+	"RUB": 89.6,
+}
+
 const errorCurrencyMsg = "Поддерживается только (USD RUB EUR) - повторите ввод или нажмите 'q' для выхода"
 const errorAmountMsg = "Сумма должна быть больше 0 - повторите ввод или нажмите 'q' для выхода"
 const fromMsg = "Введите начальную валюту (USD RUB EUR): "
@@ -17,22 +23,31 @@ const amountMsg = "Введите сумму: "
 func main() {
 	fmt.Println("__Конвертер валют__")
 
-	from := getFromCurrency()
-	to := getToCurrency()
+	from := getCurrencyInput(fromMsg, &exchangeRates)
+	to := getCurrencyInput(toMsg, &exchangeRates)
 	amount := getAmount()
 
-	result := convertedCurrency(amount, from, to)
+	result := converter(amount, from, to, &exchangeRates)
 	fmt.Printf("Итог конвертации: %.2f %s\n", result, to)
 }
 
-func getFromCurrency() string {
-	fmt.Print(fromMsg)
-	return getCurrency()
-}
+func getCurrencyInput(prompt string, rates *ratesMap) string {
+	for {
 
-func getToCurrency() string {
-	fmt.Print(toMsg)
-	return getCurrency()
+		fmt.Print(prompt)
+		var currency string
+		fmt.Scan(&currency)
+		currency = strings.ToUpper(currency)
+
+		quit(currency)
+		_, ok := (*rates)[currency]
+
+		if ok {
+			return currency
+		}
+
+		fmt.Println(errorCurrencyMsg)
+	}
 }
 
 func getAmount() float64 {
@@ -63,52 +78,7 @@ func quit(str string) {
 	}
 }
 
-func getCurrency() string {
-	for {
-		var currency string
-		fmt.Scan(&currency)
-		currency = strings.ToUpper(currency)
-
-		quit(currency)
-
-		if isCurrency(currency) {
-			return currency
-		}
-
-		fmt.Println(errorCurrencyMsg)
-	}
-}
-
-func isCurrency(currency string) bool {
-	return currency == "EUR" || currency == "USD" || currency == "RUB"
-}
-
-func convertedCurrency(amount float64, from string, to string) float64 {
-	usd := convertedToUsd(amount, from)
-
-	switch to {
-	case "EUR":
-		return usd * UsdToEur
-	case "RUB":
-		return usd * UsdToRub
-	}
-
-	return usd
-}
-
-func convertedToUsd(amount float64, from string) float64 {
-	if from == "USD" {
-		return amount
-	}
-
-	var usd float64
-
-	switch from {
-	case "EUR":
-		usd = amount / UsdToEur
-	case "RUB":
-		usd = amount / UsdToRub
-	}
-
-	return usd
+func converter(amount float64, from string, to string, rates *ratesMap) float64 {
+	usdAmount := amount / (*rates)[from]
+	return usdAmount * (*rates)[to]
 }
