@@ -1,3 +1,3 @@
-module 2-bin
+module 3-bin
 
 go 1.24

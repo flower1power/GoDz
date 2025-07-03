@@ -13,6 +13,12 @@ type BinList struct {
 	list []Bin
 }
 
+func newBinList() *BinList {
+	binList := BinList{}
+
+	return &binList
+}
+
 func newBin(
 	id string,
 	private bool,
