@@ -32,3 +32,9 @@ func NewBin(
 		name:      name,
 	}
 }
+func addBinList(list *BinList, newBin *Bin) {
+	list.list = append(list.list, *newBin)
+}
+
+func deleteBin(list *BinList, delBin *Bin){
+}
