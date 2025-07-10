@@ -2,13 +2,10 @@ package storage
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
-	"io/fs"
 	"os"
-	"path/filepath"
 
 	"3-bin/bins"
+	"3-bin/file"
 
 	"github.com/fatih/color"
 )
@@ -48,36 +45,11 @@ func SavedBinToFile(bin bins.Bin) error {
 }
 
 func ReadFileBin() (*bins.BinList, error) {
-	// file, err := file.ReadFile(FILE_NAME)
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	ext := filepath.Ext(FILE_NAME)
-
-	if ext != ".json" {
-		err := fmt.Errorf("указанный файл не является json: %s", FILE_NAME)
-		color.Red(err.Error())
-		return nil, err
-	}
-
-  isExist, err := exists(FILE_NAME)
+	file, err := file.ReadFile(FILE_NAME)
 	if err != nil {
-		color.Red("ошибка при проверке файла: %s", err)
-		return nil, err
-	}
-
-  if !isExist {
-		err := fmt.Errorf("указанный файл не найден: %s", FILE_NAME)
-		color.Red(err.Error())
-		return nil, err
-  }
-
-
-	file, err := os.ReadFile(FILE_NAME)
-
-	if err != nil {
-		color.Red("Не удалось прочитать файл %s", FILE_NAME)
+		if os.IsNotExist(err) {
+			return &bins.BinList{}, nil
+		}
 		return nil, err
 	}
 
@@ -91,18 +63,4 @@ func ReadFileBin() (*bins.BinList, error) {
 	}
 
 	return &binList, nil
-}
-
-func exists(name string) (bool, error) {
-	_, err := os.Stat(name)
-
-	if err == nil {
-		return true, nil
-	}
-
-	if errors.Is(err, fs.ErrNotExist){
-		return false, nil
-	}
-
-	return false, err
 }

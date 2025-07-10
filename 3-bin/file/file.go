@@ -19,7 +19,7 @@ func ReadFile(name string) ([]byte, error) {
 		return nil, err
 	}
 
-  isExist, err := exists(name)
+  isExist, err := existsFile(name)
 	if err != nil {
 		color.Red("ошибка при проверке файла: %s", err)
 		return nil, err
@@ -41,7 +41,7 @@ func ReadFile(name string) ([]byte, error) {
 	return file, nil
 }
 
-func exists(name string) (bool, error) {
+func existsFile(name string) (bool, error) {
 	_, err := os.Stat(name)
 
 	if err == nil {
