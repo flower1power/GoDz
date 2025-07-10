@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"3-bin/bins"
+	"3-bin/file"
 
 	"github.com/fatih/color"
 )
@@ -12,8 +13,12 @@ import (
 const FILE_NAME string = "bin.json"
 
 func SavedBinToFile(bin bins.Bin) error {
-	binList := bins.NewBinList()
-	binList.Lists = append(binList.Lists, bin)
+	binList, err := ReadFileBin()
+	if err != nil {
+		return err
+	}
+
+	bins.AddBinList(binList, &bin)
 
 	file, err := os.Create(FILE_NAME)
 
@@ -40,11 +45,8 @@ func SavedBinToFile(bin bins.Bin) error {
 }
 
 func ReadFileBin() (*bins.BinList, error) {
-	file, err := os.ReadFile(FILE_NAME)
-
-
+	file, err := file.ReadFile(FILE_NAME)
 	if err != nil {
-		color.Red("Не удалось прочитать файл bin.json")
 		return nil, err
 	}
 
