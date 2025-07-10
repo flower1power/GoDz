@@ -3,17 +3,17 @@ package bins
 import "time"
 
 type Bin struct {
-	id        string
-	private   bool
-	createdAt time.Time
-	name      string
+	Id        string `json:"id"`
+	Private   bool `json:"private"`
+	CreatedAt time.Time `json:"createdAt"`
+	Name      string `json:"name"`
 }
 
 type BinList struct {
-	list []Bin
+	Lists []Bin `json:"lists"`
 }
 
-func newBinList() *BinList {
+func NewBinList() *BinList {
 	binList := BinList{}
 
 	return &binList
@@ -26,15 +26,21 @@ func NewBin(
 	name string) *Bin {
 
 	return &Bin{
-		id:        id,
-		private:   private,
-		createdAt: createdAt,
-		name:      name,
+		Id:        id,
+		Private:   private,
+		CreatedAt: createdAt,
+		Name:      name,
 	}
 }
-func addBinList(list *BinList, newBin *Bin) {
-	list.list = append(list.list, *newBin)
+
+func (bin *Bin) save(){
+	
 }
 
-func deleteBin(list *BinList, delBin *Bin){
+
+func AddBinList(binList *BinList, newBin *Bin) {
+	binList.Lists = append(binList.Lists, *newBin)
+}
+
+func DeleteBin(list *BinList, delBin *Bin){
 }
