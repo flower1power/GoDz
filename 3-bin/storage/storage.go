@@ -2,6 +2,8 @@ package storage
 
 import (
 	"encoding/json"
+	"errors"
+	"io/fs"
 	"os"
 
 	"3-bin/bins"
@@ -47,8 +49,8 @@ func SavedBinToFile(bin bins.Bin) error {
 func ReadFileBin() (*bins.BinList, error) {
 	file, err := file.ReadFile(FILE_NAME)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return &bins.BinList{}, nil
+		if errors.Is(err, fs.ErrNotExist) {
+			return bins.NewBinList(), nil
 		}
 		return nil, err
 	}

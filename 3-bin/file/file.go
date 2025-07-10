@@ -26,8 +26,8 @@ func ReadFile(name string) ([]byte, error) {
 	}
 
   if !isExist {
-		err := fmt.Errorf("указанный файл не найден: %s", name)
-		color.Red(err.Error())
+		err := fs.ErrNotExist
+		color.Red("указанный файл не найден: %s", name)
 		return nil, err
   }
 
