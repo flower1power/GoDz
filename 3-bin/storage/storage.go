@@ -11,7 +11,10 @@ import (
 
 const FILE_NAME string = "bin.json"
 
-func SavedBinToFile(bytes []byte) error {
+func SavedBinToFile(bin bins.Bin) error {
+	binList := bins.NewBinList()
+	binList.Lists = append(binList.Lists, bin)
+
 	file, err := os.Create(FILE_NAME)
 
 	if err != nil {
@@ -21,7 +24,13 @@ func SavedBinToFile(bytes []byte) error {
 
 	defer file.Close()
 
-	_, err = file.Write(bytes)
+	b, err := json.Marshal(binList)
+	if err != nil {
+		color.Red("Не удалось преобразовать bin в []byte")
+		return err
+	}
+
+	_, err = file.Write(b)
 	if err != nil {
 		color.Red("Не удалось записать данные в bin.json")
 		return err
@@ -30,7 +39,7 @@ func SavedBinToFile(bytes []byte) error {
 	return nil
 }
 
-func ReadFileBin() (*bins.Bin, error) {
+func ReadFileBin() (*bins.BinList, error) {
 	file, err := os.ReadFile(FILE_NAME)
 
 
@@ -39,15 +48,15 @@ func ReadFileBin() (*bins.Bin, error) {
 		return nil, err
 	}
 
-	var bin bins.Bin
+	var binList bins.BinList
 
-	err = json.Unmarshal(file, &bin)
+	err = json.Unmarshal(file, &binList)
 
 	if err != nil {
 		color.Red("Не удалось преобразовать файл в структуру Bin")
 		return nil, err
 	}
 
-	return &bin, nil
+	return &binList, nil
 }
 

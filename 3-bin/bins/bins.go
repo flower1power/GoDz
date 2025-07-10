@@ -33,10 +33,6 @@ func NewBin(
 	}
 }
 
-func (bin *Bin) save(){
-	
-}
-
 
 func AddBinList(binList *BinList, newBin *Bin) {
 	binList.Lists = append(binList.Lists, *newBin)
