@@ -14,13 +14,15 @@ import (
 
 const FILE_NAME string = "bin.json"
 
-func SavedBinToFile(bin bins.Bin) error {
-	binList, err := ReadFileBin()
-	if err != nil {
-		return err
-	}
+type Storage interface {
+	Saved(bin bins.Bin) error
+	Read() (bins.BinList, error)
+}
 
-	bins.AddBinList(binList, &bin)
+func Saved(bin *bins.Bin) error {
+	binList, _ := Read()
+
+	bins.AddBinList(binList, bin)
 
 	file, err := os.Create(FILE_NAME)
 
@@ -46,8 +48,9 @@ func SavedBinToFile(bin bins.Bin) error {
 	return nil
 }
 
-func ReadFileBin() (*bins.BinList, error) {
+func Read() (*bins.BinList, error) {
 	file, err := file.ReadFile(FILE_NAME)
+
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
 			return bins.NewBinList(), nil

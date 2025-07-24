@@ -1,12 +1,15 @@
 package bins
 
-import "time"
+import (
+	"github.com/google/uuid"
+	"time"
+)
 
 type Bin struct {
-	Id        string `json:"id"`
-	Private   bool `json:"private"`
+	Id        uuid.UUID `json:"id"`
+	Private   bool      `json:"private"`
 	CreatedAt time.Time `json:"createdAt"`
-	Name      string `json:"name"`
+	Name      string    `json:"name"`
 }
 
 type BinList struct {
@@ -20,23 +23,20 @@ func NewBinList() *BinList {
 }
 
 func NewBin(
-	id string,
 	private bool,
-	createdAt time.Time,
 	name string) *Bin {
 
 	return &Bin{
-		Id:        id,
+		Id:        uuid.New(),
 		Private:   private,
-		CreatedAt: createdAt,
+		CreatedAt: time.Now(),
 		Name:      name,
 	}
 }
-
 
 func AddBinList(binList *BinList, newBin *Bin) {
 	binList.Lists = append(binList.Lists, *newBin)
 }
 
-func DeleteBin(list *BinList, delBin *Bin){
+func DeleteBin(list *BinList, delBin *Bin) {
 }
