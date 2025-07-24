@@ -7,9 +7,9 @@ import (
 	"strings"
 )
 
-type operationM = map[string]func([]float64) (float64, error)
+type operation = map[string]func([]float64) (float64, error)
 
-var operationMap = operationM{
+var operationMap = operation{
 	"SUM": calculateSum,
 	"AVG": calculateAVG,
 	"MED": calculateMed,
@@ -40,7 +40,7 @@ func main() {
 	fmt.Printf("Результат операции: %s равен: %.2f ", operation, result)
 }
 
-func setOperations(o *operationM) (string, error) {
+func setOperations(o *operation) (string, error) {
 	var input string
 
 	for {
